@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+    <title>OOJS MVC Demo</title>
+    <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/1.6/js/dojo/dijit/themes/tundra/tundra.css">
+    <script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.6"></script>
+	
+	<script type="text/javascript" src="extend.js"></script>
+	<script type="text/javascript" src="OOJS_MVC.js"></script>
+    
+	<script>
+      dojo.require("esri.map");
+      dojo.require("esri.tasks.query");
+
+      var map;
+	  var controller;
+	  var view;
+
+      function init() {
+        
+	
+
+		//Set up the map
+		map = new esri.Map("map", { extent:new esri.geometry.Extent({ "xmin": -125.947265625, "ymin": 31.17919921875, "xmax": -103.974609375, "ymax": 42.16552734375  }) });
+        map.addLayer(new esri.layers.ArcGISTiledMapServiceLayer("http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer"));
+        map.addLayer(new esri.layers.ArcGISDynamicMapServiceLayer("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Demographics/ESRI_Census_USA/MapServer", { opacity:0.4 }));
+
+		//view = new DS.QueryControllerMapView({map: map});
+		view = new DS.QueryControllerView();
+		
+		controller = new DS.QueryController({
+			view: view,
+			serviceURL: "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Demographics/ESRI_Census_USA/MapServer/3"
+		});
+
+		//set up click event handler
+		dojo.connect(map, "onClick", function(evt) {
+			controller.initiateQuery(evt.mapPoint);
+		});
+		
+		
+
+      }
+
+      dojo.addOnLoad(init);
+    </script>
+  </head>
+  <body class="tundra">
+    <span style="font-size:200%; font-weight:bold;">OOJS MVC Demo App</span>
+    <div id="map" style="width:800px; height:500px; border:1px solid #000;"></div>
+  </body>
+</html>
